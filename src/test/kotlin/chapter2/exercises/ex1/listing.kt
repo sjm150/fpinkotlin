@@ -3,18 +3,20 @@ package chapter2.exercises.ex1
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.WordSpec
 import kotlin.collections.mapOf
-import utils.SOLUTION_HERE
 
 //TODO: Enable tests by removing `!` prefix
 class Exercise1 : WordSpec({
     //tag::init[]
-    fun fib(i: Int): Int =
+    fun fib(i: Int): Int {
+        tailrec fun go(n: Int, curr: Int, next: Int): Int =
+            if (n <= 0) curr else go(n - 1, next, curr + next)
 
-        SOLUTION_HERE()
+        return go(i, 0, 1)
+    }
     //end::init[]
 
     "fib" should {
-        "!return the nth fibonacci number" {
+        "return the nth fibonacci number" {
             mapOf(
                 1 to 1,
                 2 to 1,
