@@ -17,6 +17,10 @@ fun <A> isSorted(aa: List<A>, order: (A, A) -> Boolean): Boolean {
         else if (!order(head, tail.head)) false
         else go(tail.head, tail.tail)
 
+    // compiler warning
+    tailrec fun goOneExpr(head: A, tail: List<A>): Boolean =
+        tail.isEmpty() || (order(head, tail.head) && goOneExpr(tail.head, tail.tail))
+
     return aa.isEmpty() || go(aa.head, aa.tail)
 }
 // end::init[]
