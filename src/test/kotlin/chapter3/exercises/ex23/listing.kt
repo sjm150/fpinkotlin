@@ -1,26 +1,33 @@
 package chapter3.exercises.ex23
 
+import chapter3.Cons
 import chapter3.List
+import chapter3.Nil
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.WordSpec
-import utils.SOLUTION_HERE
 
 // tag::startsWith[]
 tailrec fun <A> startsWith(l1: List<A>, l2: List<A>): Boolean =
-
-    SOLUTION_HERE()
+    if (l1 is Cons && l2 is Cons) {
+        if (l1.head == l2.head) startsWith(l1.tail, l2.tail) else false
+    } else {
+        l2 is Nil
+    }
 // end::startsWith[]
 
 // tag::init[]
 tailrec fun <A> hasSubsequence(xs: List<A>, sub: List<A>): Boolean =
-
-    SOLUTION_HERE()
+    if (startsWith(xs, sub))
+        true
+    else when (xs) {
+        is Nil -> false
+        is Cons -> hasSubsequence(xs.tail, sub)
+    }
 // end::init[]
 
-//TODO: Enable tests by removing `!` prefix
 class Exercise23 : WordSpec({
     "list subsequence" should {
-        "!determine if a list starts with" {
+        "determine if a list starts with" {
             val xs = List.of(1, 2, 3)
             startsWith(xs, List.of(1)) shouldBe true
             startsWith(xs, List.of(1, 2)) shouldBe true
@@ -30,7 +37,7 @@ class Exercise23 : WordSpec({
             startsWith(xs, List.of(6)) shouldBe false
         }
 
-        "!identify subsequences of a list" {
+        "identify subsequences of a list" {
             val xs = List.of(1, 2, 3, 4, 5)
             hasSubsequence(xs, List.of(1)) shouldBe true
             hasSubsequence(xs, List.of(1, 2)) shouldBe true
