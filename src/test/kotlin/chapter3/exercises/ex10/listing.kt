@@ -10,7 +10,7 @@ fun sumL(xs: List<Int>): Int =
     foldLeft(xs, 0) { acc, x -> acc + x }
 
 fun productL(xs: List<Double>): Double =
-    foldLeft(xs, 1.0) { acc, x -> acc * x}
+    foldLeft(xs, 1.0) { acc, x -> acc * x }
 
 fun <A> lengthL(xs: List<A>): Int =
     foldLeft(xs, 0) { acc, _ -> acc + 1 }

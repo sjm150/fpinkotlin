@@ -8,9 +8,9 @@ import io.kotlintest.specs.WordSpec
 
 // tag::init[]
 fun <A> dropWhile(l: List<A>, f: (A) -> Boolean): List<A> {
-    fun go(l: List<A>) = when (l) {
+    fun go(l: List<A>): List<A> = when (l) {
         is Nil -> l
-        is Cons<A> -> if (f(l.head)) dropWhile(l.tail, f) else l
+        is Cons<A> -> if (f(l.head)) go(l.tail) else l
     }
     return go(l)
 }

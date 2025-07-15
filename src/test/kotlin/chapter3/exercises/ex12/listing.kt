@@ -13,7 +13,7 @@ fun <A, B> foldLeftR(xs: List<A>, z: B, f: (B, A) -> B): B =
     }.invoke(z)
 
 fun <A, B> foldRightL(xs: List<A>, z: B, f: (A, B) -> B): B =
-    foldLeft(xs, { y -> y }) { acc: (B) -> B, x ->
+    foldLeft(xs, { it }) { acc: (B) -> B, x ->
         { acc(f(x, it)) }
     }.invoke(z)
 // end::init[]
