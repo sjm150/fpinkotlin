@@ -8,10 +8,11 @@ import chapter4.None
 import chapter4.Option
 import chapter4.Some
 import chapter4.getOrElse
+import chapter4.map
 import io.kotlintest.matchers.doubles.plusOrMinus
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.WordSpec
-import utils.SOLUTION_HERE
+import kotlin.math.pow
 
 fun mean(xs: List<Double>): Option<Double> =
     if (xs.isEmpty()) None
@@ -19,15 +20,15 @@ fun mean(xs: List<Double>): Option<Double> =
 
 //tag::init[]
 fun variance(xs: List<Double>): Option<Double> =
-
-    SOLUTION_HERE()
+    mean(xs).map { m ->
+        xs.map { x -> (x - m).pow(2) }
+    }.flatMap(::mean)
 //end::init[]
 
-//TODO: Enable tests by removing `!` prefix
 class Exercise2 : WordSpec({
 
     "variance" should {
-        "!determine the variance of a list of numbers" {
+        "determine the variance of a list of numbers" {
             val ls =
                 List.of(1.0, 1.1, 1.0, 3.0, 0.9, 0.4)
             variance(ls).getOrElse { 0.0 } shouldBe
