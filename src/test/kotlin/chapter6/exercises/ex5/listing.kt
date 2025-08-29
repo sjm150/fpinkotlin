@@ -2,19 +2,16 @@ package chapter6.exercises.ex5
 
 import chapter6.RNG
 import chapter6.Rand
-// import chapter6.map
-// import chapter6.solutions.ex1.nonNegativeInt
+import chapter6.exercises.ex1.nonNegativeInt
+import chapter6.map
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.WordSpec
-import utils.SOLUTION_HERE
 
-//TODO: Enable tests by removing `!` prefix
 class Exercise5 : WordSpec({
 
     //tag::init[]
     fun doubleR(): Rand<Double> =
-
-        SOLUTION_HERE()
+        map(::nonNegativeInt) { it / -Int.MIN_VALUE.toDouble() }
     //end::init[]
 
     "doubleR" should {
@@ -23,7 +20,7 @@ class Exercise5 : WordSpec({
             override fun nextInt(): Pair<Int, RNG> = TODO()
         }
 
-        """!generate a max value approaching 1 based on
+        """generate a max value approaching 1 based on
             Int.MAX_VALUE using Rand""" {
 
             val rngMax = object : RNG {
@@ -35,7 +32,7 @@ class Exercise5 : WordSpec({
             doubleRand(rngMax) shouldBe (0.9999999995343387 to unusedRng)
         }
 
-        "!generate a min value of 0 based on 0 using Rand" {
+        "generate a min value of 0 based on 0 using Rand" {
 
             val rngMin = object : RNG {
                 override fun nextInt(): Pair<Int, RNG> =

@@ -3,16 +3,15 @@ package chapter6.exercises.ex1
 import chapter6.RNG
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.WordSpec
-import utils.SOLUTION_HERE
 
-//TODO: Enable tests by removing `!` prefix
+//tag::init[]
+fun nonNegativeInt(rng: RNG): Pair<Int, RNG> =
+    rng.nextInt().let { (i, rng) ->
+        (if (i < 0) -(i + 1) else i) to rng
+    }
+//end::init[]
+
 class Exercise1 : WordSpec({
-
-    //tag::init[]
-    fun nonNegativeInt(rng: RNG): Pair<Int, RNG> =
-
-        SOLUTION_HERE()
-    //end::init[]
 
     "nonNegativeInt" should {
 
@@ -20,7 +19,7 @@ class Exercise1 : WordSpec({
             override fun nextInt(): Pair<Int, RNG> = TODO()
         }
 
-        "!return 0 if nextInt() yields 0" {
+        "return 0 if nextInt() yields 0" {
 
             val rng0 = object : RNG {
                 override fun nextInt(): Pair<Int, RNG> =
@@ -30,7 +29,7 @@ class Exercise1 : WordSpec({
             nonNegativeInt(rng0) shouldBe (0 to unusedRng)
         }
 
-        "!return Int.MAX_VALUE when nextInt() yields Int.MAX_VALUE" {
+        "return Int.MAX_VALUE when nextInt() yields Int.MAX_VALUE" {
 
             val rngMax = object : RNG {
                 override fun nextInt(): Pair<Int, RNG> =
@@ -40,7 +39,7 @@ class Exercise1 : WordSpec({
             nonNegativeInt(rngMax) shouldBe (Int.MAX_VALUE to unusedRng)
         }
 
-        "!return Int.MAX_VALUE when nextInt() yields Int.MIN_VALUE" {
+        "return Int.MAX_VALUE when nextInt() yields Int.MIN_VALUE" {
 
             val rngMin = object : RNG {
                 override fun nextInt(): Pair<Int, RNG> =
@@ -50,7 +49,7 @@ class Exercise1 : WordSpec({
             nonNegativeInt(rngMin) shouldBe (Int.MAX_VALUE to unusedRng)
         }
 
-        "!return 0 when nextInt() yields -1" {
+        "return 0 when nextInt() yields -1" {
 
             val rngNeg = object : RNG {
                 override fun nextInt(): Pair<Int, RNG> =
