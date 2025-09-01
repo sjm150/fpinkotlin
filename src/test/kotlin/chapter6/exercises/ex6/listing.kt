@@ -6,19 +6,19 @@ import chapter6.unit
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.WordSpec
 
-class Exercise6 : WordSpec({
+//tag::init[]
+fun <A, B, C> map2(
+    ra: Rand<A>,
+    rb: Rand<B>,
+    f: (A, B) -> C
+): Rand<C> = { rng ->
+    val (a, r1) = ra(rng)
+    val (b, r2) = rb(r1)
+    f(a, b) to r2
+}
+//end::init[]
 
-    //tag::init[]
-    fun <A, B, C> map2(
-        ra: Rand<A>,
-        rb: Rand<B>,
-        f: (A, B) -> C
-    ): Rand<C> = { rng ->
-        val (a, r1) = ra(rng)
-        val (b, r2) = rb(r1)
-        f(a, b) to r2
-    }
-    //end::init[]
+class Exercise6 : WordSpec({
 
     "map2" should {
         "combine the results of two actions" {
