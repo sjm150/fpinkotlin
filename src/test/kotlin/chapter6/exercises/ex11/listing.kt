@@ -32,21 +32,17 @@ class Exercise11 : WordSpec({
         inputs: List<Input>
     ): State<Machine, Tuple2<Int, Int>> =
         State.fx(Id.monad()) {
-            inputs
-                .map { input ->
-                    op@{ (locked, candies, coins): Machine ->
-                        if (candies == 0) return@op Machine(locked, candies, coins)
-                        when (input) {
-                            is Coin -> Machine(false, candies, coins + if (locked) 1 else 0)
-                            is Turn -> Machine(true, candies - if (locked) 0 else 1, coins)
-                        }
+            inputs.forEach { input ->
+                modify<Machine> op@{
+                    if (it.candies == 0) return@op it
+                    when (input) {
+                        is Coin -> Machine(false, it.candies, it.coins + if (it.locked) 1 else 0)
+                        is Turn -> Machine(true, it.candies - if (it.locked) 0 else 1, it.coins)
                     }
-                }
-                .map(::modify)
-                .forEach { it.bind() }
+                }.bind()
+            }
 
-            val (_, candies, coins) = get<Machine>().bind()
-            Tuple2(candies, coins)
+            get<Machine>().bind().let { Tuple2(it.candies, it.coins) }
         }
     //end::init2[]
 
