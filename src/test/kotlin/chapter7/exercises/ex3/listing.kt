@@ -7,7 +7,6 @@ import io.kotlintest.shouldThrow
 import io.kotlintest.specs.WordSpec
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import utils.SOLUTION_HERE
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Future
 import java.util.concurrent.LinkedBlockingQueue
@@ -21,26 +20,32 @@ data class TimedMap2Future<A, B, C>(
     val f: (A, B) -> C
 ) : Future<C> {
 
-    override fun isDone(): Boolean = TODO()
+    override fun isDone(): Boolean = pa.isDone && pb.isDone
 
-    override fun get(): C = TODO()
+    override fun get(): C = f(pa.get(), pb.get())
 
-    override fun get(to: Long, tu: TimeUnit): C =
-        SOLUTION_HERE("will be used to get the future result")
+    override fun get(to: Long, tu: TimeUnit): C {
+        val start = System.currentTimeMillis()
+        val a = pa.get(to, tu)
+        val r = TimeUnit.MILLISECONDS.convert(to, tu) - System.currentTimeMillis() + start
+        return f(a, pb.get(r, TimeUnit.MILLISECONDS))
+    }
 
-    override fun cancel(b: Boolean): Boolean = TODO()
+    override fun cancel(b: Boolean): Boolean = pa.cancel(b) && pb.cancel(b)
 
-    override fun isCancelled(): Boolean = TODO()
+    override fun isCancelled(): Boolean = pa.isCancelled && pb.isCancelled
 }
 
 fun <A, B, C> map2(
     a: Par<A>,
     b: Par<B>,
     f: (A, B) -> C
-): Par<C> =
-    SOLUTION_HERE()
+): Par<C> = { es: ExecutorService ->
+    val af = a(es)
+    val bf = b(es)
+    TimedMap2Future(af, bf, f)
+}
 
-//TODO: Enable tests by removing `!` prefix
 class Exercise3 : WordSpec({
 
     val es: ExecutorService =
@@ -49,7 +54,7 @@ class Exercise3 : WordSpec({
         )
 
     "map2" should {
-        "!allow two futures to run within a given timeout" {
+        "allow two futures to run within a given timeout" {
 
             val pa = Pars.fork {
                 Thread.sleep(400L)
@@ -69,7 +74,7 @@ class Exercise3 : WordSpec({
             }
         }
 
-        "!timeout if first future exceeds timeout" {
+        "timeout if first future exceeds timeout" {
 
             val pa = Pars.fork {
                 Thread.sleep(1100L)
@@ -91,7 +96,7 @@ class Exercise3 : WordSpec({
             }
         }
 
-        "!timeout if second future exceeds timeout" {
+        "timeout if second future exceeds timeout" {
 
             val pa = Pars.fork {
                 Thread.sleep(100L)
