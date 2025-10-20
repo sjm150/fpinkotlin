@@ -3,7 +3,6 @@ package chapter8.exercises.ex7
 import chapter8.RNG
 import chapter8.State
 import chapter8.nextBoolean
-import utils.SOLUTION_HERE
 
 data class Gen<A>(val sample: State<RNG, A>) {
     companion object {
@@ -13,8 +12,7 @@ data class Gen<A>(val sample: State<RNG, A>) {
 
         //tag::init[]
         fun <A> union(ga: Gen<A>, gb: Gen<A>): Gen<A> =
-
-            SOLUTION_HERE()
+            boolean().flatMap { if (it) ga else gb }
         //end::init[]
     }
 

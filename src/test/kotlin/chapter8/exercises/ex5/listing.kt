@@ -2,23 +2,20 @@ package chapter8.exercises.ex5
 
 import chapter8.RNG
 import chapter8.State
-import utils.SOLUTION_HERE
+import chapter8.nextBoolean
 
 data class Gen<A>(val sample: State<RNG, A>) {
     companion object {
 
         //tag::init[]
         fun <A> unit(a: A): Gen<A> =
-
-            SOLUTION_HERE()
+            Gen(State.unit(a))
 
         fun boolean(): Gen<Boolean> =
-
-            SOLUTION_HERE()
+            Gen(State { nextBoolean(it) })
 
         fun <A> listOfN(n: Int, ga: Gen<A>): Gen<List<A>> =
-
-            SOLUTION_HERE()
+            Gen(State.sequence(List(n) { ga.sample }))
         //end::init[]
     }
 }
