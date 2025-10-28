@@ -2,7 +2,6 @@ package chapter8.exercises.ex11
 
 import chapter8.RNG
 import chapter8.State
-import utils.SOLUTION_HERE
 
 data class Gen<A>(val sample: State<RNG, A>) {
 
@@ -16,16 +15,10 @@ data class Gen<A>(val sample: State<RNG, A>) {
 //tag::init[]
 data class SGen<A>(val forSize: (Int) -> Gen<A>) {
 
-    operator fun invoke(i: Int): Gen<A> =
+    operator fun invoke(i: Int): Gen<A> = forSize(i)
 
-        SOLUTION_HERE()
+    fun <B> map(f: (A) -> B): SGen<B> = SGen { i -> forSize(i).map(f) }
 
-    fun <B> map(f: (A) -> B): SGen<B> =
-
-        SOLUTION_HERE()
-
-    fun <B> flatMap(f: (A) -> Gen<B>): SGen<B> =
-
-        SOLUTION_HERE()
+    fun <B> flatMap(f: (A) -> Gen<B>): SGen<B> = SGen { i -> forSize(i).flatMap(f) }
 }
 //end::init[]
