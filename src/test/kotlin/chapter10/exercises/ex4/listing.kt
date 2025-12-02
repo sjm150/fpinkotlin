@@ -9,16 +9,29 @@ import chapter8.Gen
 import chapter8.Prop
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.WordSpec
-import utils.SOLUTION_HERE
 
 //tag::init1[]
-fun <A> monoidLaws(m: Monoid<A>, gen: Gen<A>): Prop =
+fun <A> monoidLaws(m: Monoid<A>, gen: Gen<A>): Prop {
+    val identity = Prop.forAll(gen) {
+        m.combine(it, m.nil) == it &&
+            m.combine(m.nil, it) == it
+    }
 
-    SOLUTION_HERE()
+    val tripleGen = gen.flatMap { first ->
+        gen.flatMap { second ->
+            gen.map { third -> Triple(first, second, third) }
+        }
+    }
+
+    val associativity = Prop.forAll(tripleGen) { (a1, a2, a3) ->
+        m.combine(m.combine(a1, a2), a3) == m.combine(a1, m.combine(a2, a3))
+    }
+
+    return identity.and(associativity)
+}
 //end::init1[]
 
 //tag::init2[]
-//TODO: Enable tests by removing `!` prefix
 class Exercise4 : WordSpec({
     val max = 100
     val count = 100
@@ -26,7 +39,7 @@ class Exercise4 : WordSpec({
     val intGen = Gen.choose(-10000, 10000)
 
     "law of associativity" should {
-        "!be upheld using existing monoids" {
+        "be upheld using existing monoids" {
             monoidLaws(intAdditionMonoid, intGen)
                 .check(max, count, rng) shouldBe Passed
 

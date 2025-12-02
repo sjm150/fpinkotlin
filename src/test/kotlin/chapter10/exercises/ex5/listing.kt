@@ -1,10 +1,9 @@
 package chapter10.exercises.ex5
 
+import arrow.core.extensions.list.foldable.foldLeft
 import chapter10.sec1.Monoid
-import utils.SOLUTION_HERE
 
 //tag::init1[]
 fun <A, B> foldMap(la: List<A>, m: Monoid<B>, f: (A) -> B): B =
-
-    SOLUTION_HERE()
+    la.map(f).foldLeft(m.nil, m::combine)
 //end::init1[]

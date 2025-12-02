@@ -2,12 +2,14 @@ package chapter10.exercises.ex3
 
 import arrow.core.compose
 import chapter10.Monoid
-import utils.SOLUTION_HERE
 
 //tag::init1[]
-fun <A> endoMonoid(): Monoid<(A) -> A> =
+fun <A> endoMonoid(): Monoid<(A) -> A> = object : Monoid<(A) -> A> {
+    override fun combine(a1: (A) -> A, a2: (A) -> A): (A) -> A = { a1(a2(it)) }
 
-    SOLUTION_HERE()
+    override val nil: (A) -> A
+        get() = { it }
+}
 //end::init1[]
 
 //tag::init2[]
