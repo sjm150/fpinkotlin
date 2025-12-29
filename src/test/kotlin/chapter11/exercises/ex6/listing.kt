@@ -1,9 +1,9 @@
 package chapter11.exercises.ex6
 
 import arrow.Kind
+import chapter10.Cons
 import chapter10.List
 import chapter11.Functor
-import utils.SOLUTION_HERE
 
 interface Monad<F> : Functor<F> {
 
@@ -13,12 +13,18 @@ interface Monad<F> : Functor<F> {
     override fun <A, B> map(fa: Kind<F, A>, f: (A) -> B): Kind<F, B> =
         flatMap(fa) { a -> unit(f(a)) }
 
+    fun <A, B, C> map2(fa: Kind<F, A>, fb: Kind<F, B>, f: (A, B) -> C) =
+        flatMap(fa) { a -> map(fb) { b -> f(a, b) } }
+
     //tag::init[]
     fun <A> filterM(
         ms: List<A>,
         f: (A) -> Kind<F, Boolean>
     ): Kind<F, List<A>> =
-
-        SOLUTION_HERE()
+        ms.foldRight(unit(List.empty())) { a, fla ->
+            map2(f(a), fla) { b, la ->
+                if (b) Cons(a, la) else la
+            }
+        }
     //end::init[]
 }
