@@ -14,11 +14,14 @@ interface Listing<F, A> : Monad<F> {
     fun listing() {
 
         //tag::initl1[]
-        compose(f, { a: A -> unit(a) })(v) == f(v)
-        compose({ a: A -> unit(a) }, f)(v) == f(v)
-        //end::initl1[]
+        compose(f, { a: A -> unit(a) })(v) == f(v);
+        { a1: A -> flatMap(f(a1)) { a: A -> unit(a) } }(v) == f(v)
+        flatMap(f(v)) { a -> unit(a) } == f(v)
 
-        TODO("express in terms of flatMap using substitution")
+        compose({ a: A -> unit(a) }, f)(v) == f(v);
+        { a1: A -> flatMap({ a: A -> unit(a) }(a1), f) }(v) == f(v)
+        flatMap({ a: A -> unit(a) }(v), f) == f(v)
+        //end::initl1[]
 
         //tag::init2[]
         flatMap(x) { a -> unit(a) } == x

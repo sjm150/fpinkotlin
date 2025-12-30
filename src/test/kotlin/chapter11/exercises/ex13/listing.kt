@@ -2,7 +2,6 @@ package chapter11.exercises.ex13
 
 import arrow.Kind
 import chapter11.Monad
-import utils.SOLUTION_HERE
 
 interface Listing<F, A> : Monad<F> {
 
@@ -20,9 +19,27 @@ interface Listing<F, A> : Monad<F> {
             flatMap(x) { a -> flatMap(f(a), g) }
         //end::init1[]
 
-        SOLUTION_HERE(
-            "Express in terms of join, map and unit using substitution"
-        )
+        // left term
+        flatMap(join(map(x, f)), g)
+        join(map(join(map(x, f)), g))
+
+        join(map(join(map(x, ::unit)), g))
+        join(map(join(unit(x)), g))
+        join(map(x, g))
+        join(map(x, ::unit))
+        join(unit(x))
+        x
+
+        // right term
+        join(map(x) { a -> flatMap(f(a), g) })
+        join(map(x) { a -> join(map(f(a), g)) })
+
+        join(map(x) { a -> join(map(unit(a), g)) })
+        join(map(x) { a -> join(map(unit(a), ::unit)) })
+        join(map(x) { a -> join(unit(unit(a))) })
+        join(map(x) { a -> unit(a) })
+        join(unit(x))
+        x
 
         //tag::init5[]
         join(unit(x)) ==

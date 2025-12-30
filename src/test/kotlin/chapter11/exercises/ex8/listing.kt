@@ -18,7 +18,6 @@ interface Monad<F> : Functor<F> {
         fa: Kind<F, A>,
         f: (A) -> Kind<F, B>
     ): Kind<F, B> =
-
-        SOLUTION_HERE()
+        compose({ _: Unit -> fa }, f).invoke(Unit)
     //end::init[]
 }

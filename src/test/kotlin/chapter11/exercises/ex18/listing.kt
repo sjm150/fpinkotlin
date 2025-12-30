@@ -13,6 +13,8 @@ fun <S> setState(s: S): State<S, Unit> =
 
 fun main() {
     //tag::init[]
-    TODO("Express laws in terms of flatMap, unit, getState and setState")
+    getState<Int>().flatMap { setState(it) } == unit<Int, Unit>(Unit)
+
+    setState(1).flatMap { _ -> getState<Int>() } == unit<Int, Int>(1)
     //end::init[]
 }

@@ -5,7 +5,6 @@ import chapter11.State
 import chapter11.StateMonad
 import chapter11.StateOf
 import chapter11.fix
-import utils.SOLUTION_HERE
 
 val intMonad: StateMonad<Int> = object : StateMonad<Int> {
     override fun <A> unit(a: A): StateOf<Int, A> =
@@ -24,16 +23,10 @@ fun main() {
     val stateB: State<Int, Int> = State { b: Int -> b to (10 * b) }
 
     //tag::init[]
-    fun replicateIntState(): StateOf<Int, List<Int>> =
+    fun replicateIntState(): StateOf<Int, List<Int>> = intMonad.replicateM(10, stateA)
 
-        SOLUTION_HERE()
+    fun map2IntState(): StateOf<Int, Int> = intMonad.map2(stateA, stateB) { a, b -> a + b }
 
-    fun map2IntState(): StateOf<Int, Int> =
-
-        SOLUTION_HERE()
-
-    fun sequenceIntState(): StateOf<Int, List<Int>> =
-
-        SOLUTION_HERE()
+    fun sequenceIntState(): StateOf<Int, List<Int>> = intMonad.sequence(List.of(stateA, stateB))
     //end::init[]
 }
