@@ -2,7 +2,6 @@ package chapter12.exercises.ex2
 
 import arrow.Kind
 import chapter12.Functor
-import utils.SOLUTION_HERE
 
 //tag::init1[]
 interface Applicative<F> : Functor<F> {
@@ -11,8 +10,7 @@ interface Applicative<F> : Functor<F> {
         fab: Kind<F, (A) -> B>,
         fa: Kind<F, A>
     ): Kind<F, B> =
-
-        SOLUTION_HERE("Define in terms of map2 and unit")
+        map2(fab, fa) { ab, a -> ab(a) }
 
     fun <A> unit(a: A): Kind<F, A>
 
@@ -20,15 +18,13 @@ interface Applicative<F> : Functor<F> {
         fa: Kind<F, A>,
         f: (A) -> B
     ): Kind<F, B> =
-
-        SOLUTION_HERE("Define in terms of apply and unit")
+        apply(unit(f), fa)
 
     fun <A, B, C> map2(
         fa: Kind<F, A>,
         fb: Kind<F, B>,
         f: (A, B) -> C
     ): Kind<F, C> =
-
-        SOLUTION_HERE("Define in terms of apply and unit")
+        apply(apply(unit { a -> { b -> f(a, b) } }, fa), fb)
 }
 //end::init1[]

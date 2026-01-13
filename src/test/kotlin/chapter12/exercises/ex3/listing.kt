@@ -1,8 +1,8 @@
 package chapter12.exercises.ex3
 
 import arrow.Kind
+import arrow.syntax.function.curried
 import chapter12.Functor
-import utils.SOLUTION_HERE
 
 interface Applicative<F> : Functor<F> {
 
@@ -20,8 +20,7 @@ interface Applicative<F> : Functor<F> {
         fc: Kind<F, C>,
         f: (A, B, C) -> D
     ): Kind<F, D> =
-
-        SOLUTION_HERE()
+        apply(apply(apply(unit(f.curried()), fa), fb), fc)
 
     fun <A, B, C, D, E> map4(
         fa: Kind<F, A>,
@@ -30,7 +29,6 @@ interface Applicative<F> : Functor<F> {
         fd: Kind<F, D>,
         f: (A, B, C, D) -> E
     ): Kind<F, E> =
-
-        SOLUTION_HERE()
+        apply(apply(apply(apply(unit(f.curried()), fa), fb), fc), fd)
     //end::init1[]
 }
