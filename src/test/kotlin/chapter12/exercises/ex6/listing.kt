@@ -1,6 +1,7 @@
 package chapter12.exercises.ex6
 
-import chapter12.exercises.ex3.Applicative
+import arrow.Kind
+import chapter12.Applicative
 import chapter12.sec4.Failure
 import chapter12.sec4.Success
 import chapter12.sec4.Validation
@@ -9,18 +10,32 @@ import chapter12.sec4.ValidationPartialOf
 import chapter12.sec4.fix
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.WordSpec
-import utils.SOLUTION_HERE
 import java.time.Instant
 import java.util.Date
 
 //tag::init1[]
-fun <E> validation(): Applicative<ValidationPartialOf<E>> =
+fun <E> validation(): Applicative<ValidationPartialOf<E>> = object : Applicative<ValidationPartialOf<E>> {
+    override fun <A> unit(a: A): Kind<ValidationPartialOf<E>, A> = Success(a)
 
-    SOLUTION_HERE()
+    override fun <A, B> apply(
+        fab: Kind<ValidationPartialOf<E>, (A) -> B>,
+        fa: Kind<ValidationPartialOf<E>, A>
+    ): Kind<ValidationPartialOf<E>, B> =
+        when (val vab = fab.fix()) {
+            is Success -> when (val va = fa.fix()) {
+                is Success -> Success(vab.a(va.a))
+                is Failure -> va
+            }
+            is Failure -> when (val va = fa.fix()) {
+                is Success -> vab
+                is Failure -> Failure(vab.head, vab.tail + va.head + va.tail)
+            }
+        }
+}
 //end::init1[]
 
 class ValidationSpec : WordSpec({
-    "!validation" should {
+    "validation" should {
 
         data class WebForm(val f1: String, val f2: Date, val f3: String)
 

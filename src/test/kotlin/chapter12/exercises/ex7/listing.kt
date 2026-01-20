@@ -13,12 +13,19 @@ interface Listing<F, A> : Monad<F> {
 
     fun listing1() {
 
+        // left side
         map2(unit(Unit), fa) { _, a -> a }
-        SOLUTION_HERE("prove me")
-        fa == fa
+        flatMap(unit(Unit)) { _ -> map(fa) { a -> a } }
+        map(fa) { a -> a }
+        flatMap(fa) { a -> unit(a) }
+        fa
 
+        // right side
         map2(fa, unit(Unit)) { a, _ -> a }
-        SOLUTION_HERE("prove me")
+        flatMap(fa) { a -> map(unit(Unit)) { _ -> a } }
+        flatMap(fa) { a -> unit(a) }
+        fa
+
         fa == fa
     }
 }

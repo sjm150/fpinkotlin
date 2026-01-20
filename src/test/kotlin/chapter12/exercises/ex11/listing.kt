@@ -3,7 +3,6 @@ package chapter12.exercises.ex11
 import arrow.Kind
 import arrow.syntax.function.curried
 import chapter12.Functor
-import utils.SOLUTION_HERE
 
 interface Applicative<F> : Functor<F> {
 
@@ -31,7 +30,8 @@ interface Applicative<F> : Functor<F> {
     fun <K, V> sequence(
         mkv: Map<K, Kind<F, V>>
     ): Kind<F, Map<K, V>> =
-
-        SOLUTION_HERE()
+        mkv.entries.fold(unit(emptyMap())) { fm, (k, fv) ->
+            map2(fm, fv) { m, v -> m + (k to v) }
+        }
     //end::init1[]
 }
