@@ -8,7 +8,6 @@ import chapter12.Product
 import chapter12.ProductOf
 import chapter12.ProductPartialOf
 import chapter12.fix
-import utils.SOLUTION_HERE
 
 infix fun <F, G> Applicative<F>.product(
     ag: Applicative<G>
@@ -52,7 +51,7 @@ interface Traversable<F> : Functor<F>, Foldable<F> {
         f: (A) -> Kind<G, B>,
         g: (A) -> Kind<H, B>
     ): Pair<Kind<G, Kind<F, B>>, Kind<H, Kind<F, B>>> =
-
-        SOLUTION_HERE()
+        traverse(ta, AG.product(AH)) { a -> Product(f(a) to g(a)) }
+            .fix().value
     //end::init[]
 }

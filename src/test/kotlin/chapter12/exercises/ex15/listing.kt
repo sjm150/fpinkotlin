@@ -1,16 +1,11 @@
 package chapter12.exercises.ex15
 
 import arrow.Kind
-import arrow.core.ForId
 import arrow.core.ForListK
-import arrow.core.Id
-import arrow.core.IdOf
 import arrow.core.ListK
 import arrow.core.ListKOf
-import arrow.core.extensions.id.apply.map2
 import arrow.core.fix
 import arrow.core.k
-import arrow.syntax.function.tupled
 import chapter10.Foldable
 import chapter11.State
 import chapter11.fix
@@ -20,25 +15,6 @@ import chapter12.sec7_2.stateMonad
 import chapter12.sec7_2.stateMonadApplicative
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.WordSpec
-import utils.SOLUTION_HERE
-
-val idApplicative: Applicative<ForId> =
-    object : Applicative<ForId> {
-        override fun <A> unit(a: A): IdOf<A> = Id(a)
-
-        override fun <A, B, C> map2(
-            fa: IdOf<A>,
-            fb: IdOf<B>,
-            f: (A, B) -> C
-        ): IdOf<C> =
-            fa.fix().map2(fb, f.tupled())
-
-        override fun <A, B> map(
-            fa: IdOf<A>,
-            f: (A) -> B
-        ): IdOf<B> =
-            fa.fix().map(f)
-    }
 
 interface Traversable<F> : Functor<F>, Foldable<F> {
 
@@ -91,8 +67,9 @@ interface Traversable<F> : Functor<F>, Foldable<F> {
 
     //tag::init[]
     fun <A> reverse(ta: Kind<F, A>): Kind<F, A> =
-
-        SOLUTION_HERE()
+        mapAccum(ta, toList(ta)) { _, la ->
+            la.last() to la.dropLast(1)
+        }.first
     //end::init[]
 }
 
@@ -107,20 +84,19 @@ val T = object : Traversable<ForListK> {
         }
 }
 
-//TODO: Enable tests by removing `!` prefix
 class Exercise15 : WordSpec({
 
     val x = listOf(1, 2, 3, 4, 5).k()
     val y = listOf(6, 7, 8, 9, 10).k()
 
     "reverse" should {
-        "!reverse the order of any traversable functor" {
+        "reverse the order of any traversable functor" {
             T.reverse(
                 listOf(1, 2, 3, 4, 5).k()
             ) shouldBe listOf(5, 4, 3, 2, 1)
         }
 
-        "!follow the law" {
+        "follow the law" {
             T.toList(T.reverse(x)) + T.toList(T.reverse(y)) shouldBe
                 T.reverse((T.toList(y) + T.toList(x)).k())
         }

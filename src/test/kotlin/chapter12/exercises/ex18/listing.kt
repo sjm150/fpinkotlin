@@ -2,10 +2,11 @@ package chapter12.exercises.ex18
 
 import arrow.Kind
 import chapter12.Applicative
+import chapter12.Composite
 import chapter12.CompositeOf
 import chapter12.CompositePartialOf
 import chapter12.Traversable
-import utils.SOLUTION_HERE
+import chapter12.fix
 
 //tag::init[]
 fun <F, G> compose(
@@ -18,7 +19,10 @@ fun <F, G> compose(
             AH: Applicative<H>,
             f: (A) -> Kind<H, B>
         ): Kind<H, CompositeOf<F, G, B>> =
-
-            SOLUTION_HERE()
+            AH.map(
+                TF.traverse(fa.fix().value, AH) { ga ->
+                    TG.traverse(ga, AH) { a -> f(a) }
+                }
+            ) { Composite(it) }
     }
 //end::init[]
